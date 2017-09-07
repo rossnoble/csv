@@ -20,11 +20,14 @@ class CSV
     # Check for unclosed quotes
     raise ArgumentError if input_string.count(quote) % 2 != 0
 
-    result     = [[]]
+    result     = []
     token      = ""
     quote_open = false
 
     input_array.each_with_index do |value, index|
+      # Create first row
+      result.push([]) if index == 0
+
       # Handle end of input string
       if (index + 1 == input_array.size)
         token += value unless value == quote

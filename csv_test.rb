@@ -3,7 +3,7 @@ require './csv'
 RSpec.describe CSV, "#parse" do
   context "with nil input" do
     it "should return an empty array" do
-      expect(CSV.parse(nil)).to eq([[]])
+      expect(CSV.parse(nil)).to eq([])
     end
   end
 
