@@ -1,5 +1,3 @@
-require 'pry'
-
 class CSV
   NEWLINE_CHAR   = "\n"
   QUOTE_CHAR     = '"'
@@ -20,9 +18,7 @@ class CSV
 
   def parse
     # Check for unclosed quotes
-    if input_string.count(quote) % 2 != 0
-      raise ArgumentError
-    end
+    raise ArgumentError if input_string.count(quote) % 2 != 0
 
     result     = [[]]
     token      = ""
@@ -30,10 +26,8 @@ class CSV
 
     input_array.each_with_index do |value, index|
       # Handle end of input string
-      if (index + 1 == input_array.size) # EOF
-        if value != quote
-          token += value
-        end
+      if (index + 1 == input_array.size)
+        token += value unless value == quote
 
         result.last.push(token)
         return result
