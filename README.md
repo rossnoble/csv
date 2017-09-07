@@ -11,3 +11,9 @@ $ bundle
 ```
 $ rake
 ```
+
+## Run benchmarks
+
+```
+$ rake bench
+```
