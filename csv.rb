@@ -9,14 +9,13 @@ class CSV
     self.new(args[0], :delimiter => args[1], :quote => args[2]).parse
   end
 
-  attr_reader :input_string, :input_array, :input_size, :delimiter, :quote
+  attr_reader :input_string, :input_array, :delimiter, :quote
 
   def initialize(input, opts = {})
     @input_string = input.to_s
     @input_array  = input.to_s.split('')
-    @input_size   = input_array.size
     @delimiter    = opts[:delimiter] || DELIMITER_CHAR
-    @quote        = opts[:quote] || QUOTE_CHAR
+    @quote        = opts[:quote]     || QUOTE_CHAR
   end
 
   def parse
@@ -25,27 +24,33 @@ class CSV
       raise ArgumentError
     end
 
-    result = [[]]
-    token = ""
+    result     = [[]]
+    token      = ""
     quote_open = false
 
     input_array.each_with_index do |value, index|
+      # Handle end of input string
       if (index + 1 == input_array.size) # EOF
-        token += value unless value == quote
+        if value != quote
+          token += value
+        end
+
         result.last.push(token)
-        token = ""
-        next
+        return result
       end
 
       case value
       when quote
+        # Look ahead at next char to see if escaped
         next_char = input_array[index + 1]
-        if next_char == quote
+        prev_char = input_array[index - 1]
+        if next_char == quote && prev_char != quote
           token += quote
           quote_open = false
         else
           quote_open = !quote_open
         end
+
       when delimiter
         # Append and reset token
         if quote_open
@@ -54,6 +59,7 @@ class CSV
           result.last.push(token)
           token = ""
         end
+
       when NEWLINE_CHAR
         if quote_open
           token += value
@@ -63,8 +69,8 @@ class CSV
           result.push([])
           token = ""
         end
+
       else
-        # Append to token string
         token += value
       end
     end

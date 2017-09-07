@@ -35,15 +35,14 @@ RSpec.describe CSV, "#parse" do
   end
 
   context "for cells with nested separator characters" do 
-    skip "returns the correct cell values" do
-      #parsed = CSV.parse("one,\"two wraps,\nonto \"\"two\"\" lines\",three\n4,,6")
-      parsed = CSV.parse('one,"two wraps,\nonto ""two"" lines",three\n4,,6')
+    it "returns the correct cell values" do
+      parsed = CSV.parse("one,\"two wraps,\nonto \"\"two\"\" lines\",three\n4,,6")
       expect(parsed).to eq([["one", "two wraps,\nonto \"two\" lines", "three"], ["4", "", "6"]])
     end
   end
 
   context "for alternate quote and separator characters" do 
-    skip "returns an array of array" do
+    it "returns an array of array" do
       parsed = CSV.parse("|alternate|\t|\"quote\"|\n\n|character|\t|hint: |||", "\t", "|")
       expect(parsed).to eq([['alternate', '"quote"'], [''], ['character', 'hint: |']])
     end
