@@ -49,10 +49,10 @@ class CSV
         end
 
       when delimiter
-        # Append and reset token
         if quote_open
           token += value
         else
+          # Append and reset token
           result.last.push(token)
           token = ""
         end
