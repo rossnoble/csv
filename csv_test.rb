@@ -34,6 +34,13 @@ RSpec.describe CSV, "#parse" do
     end
   end
 
+  context "for sequential escaped characters" do
+    it "returns the right number of escaped characters" do
+      parsed = CSV.parse(%{"a","\"\"\"\"b",c\n"d",e,"f"})
+      expect(parsed).to eq([['a', '""b', 'c'], ['d', 'e', 'f']])
+    end
+  end
+
   context "for cells with nested separator characters" do 
     it "returns the correct cell values" do
       parsed = CSV.parse("one,\"two wraps,\nonto \"\"two\"\" lines\",three\n4,,6")

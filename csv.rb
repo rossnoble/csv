@@ -20,16 +20,20 @@ class CSV
     # Check for unclosed quotes
     raise ArgumentError if input_string.count(quote) % 2 != 0
 
-    result     = []
-    token      = ""
-    quote_open = false
+    result       = []
+    token        = ""
+    index        = 0
+    quote_open   = false
+    input_length = input_array.length
 
-    input_array.each_with_index do |value, index|
+    while index < input_length
+      value = input_array[index]
+
       # Create first row
       result.push([]) if index == 0
 
       # Handle end of input string
-      if (index + 1 == input_array.size)
+      if (index + 1 == input_length)
         token += value unless value == quote
 
         result.last.push(token)
@@ -38,12 +42,18 @@ class CSV
 
       case value
       when quote
-        # Look ahead at next char to see if escaped
-        next_char = input_array[index + 1]
-        prev_char = input_array[index - 1]
-        if next_char == quote && prev_char != quote
-          token += quote
-          quote_open = false
+        if quote_open
+          # Look ahead at next char to see if escaped
+          next_char = input_array[index + 1]
+          if next_char && next_char == quote
+            # Append single quote
+            token += value
+
+            # Skip next character
+            index += 1
+          else
+            quote_open = false
+          end
         else
           quote_open = !quote_open
         end
@@ -70,6 +80,8 @@ class CSV
       else
         token += value
       end
+
+      index += 1
     end
 
     result
